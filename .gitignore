@@ -34,6 +34,7 @@ webhook
 cmd/execblock/execblock
 cmd/miner_accounts/miner_accounts
 cmd/write/write
+cmd/leveldbdump/leveldbdump
 build/autotest/autotest
 build/autotest/local/*.toml
 build/autotest/local/autotest*
