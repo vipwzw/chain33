@@ -470,6 +470,10 @@ func (dbit *goLevelDBIt) Close() {
 	dbit.Iterator.Release()
 }
 
+func (dbit *goLevelDBIt) Seek(key []byte) bool {
+	return dbit.Iterator.Seek(key)
+}
+
 //Next next
 func (dbit *goLevelDBIt) Next() bool {
 	if dbit.reverse {

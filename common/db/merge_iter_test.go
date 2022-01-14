@@ -75,6 +75,53 @@ func TestMergeIterSeek(t *testing.T) {
 	list0 = it0.List(nil, []byte("3"), 1, ListSeek)
 	assert.Equal(t, 2, len(list0))
 	assert.Equal(t, "3", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("5"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "5", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("6"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "5", string(list0[1]))
+}
+
+//
+func TestMergeIterSeek2(t *testing.T) {
+	db1, dir := newGoLevelDB(t)
+	defer os.RemoveAll(dir) // clean up
+	db2, dir := newGoLevelDB(t)
+	defer os.RemoveAll(dir) // clean up
+	db3, dir := newGoLevelDB(t)
+	defer os.RemoveAll(dir) // clean up
+	os.RemoveAll(dir)       //删除已存在目录
+	db1.Set([]byte("0"), []byte("0"))
+	db1.Set([]byte("1"), []byte("1"))
+	db2.Set([]byte("3"), []byte("3"))
+	db2.Set([]byte("4"), []byte("4"))
+	db3.Set([]byte("5"), []byte("5"))
+	db3.Set([]byte("6"), []byte("6"))
+	//合并以后:
+	db := NewMergedIteratorDB([]IteratorDB{db1, db2, db3})
+	it0 := NewListHelper(db)
+	list0 := it0.List(nil, []byte("2"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "1", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("3"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "3", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("5"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "5", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("6"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "6", string(list0[1]))
+
+	list0 = it0.List(nil, []byte("7"), 1, ListSeek)
+	assert.Equal(t, 2, len(list0))
+	assert.Equal(t, "6", string(list0[1]))
 }
 
 func TestMergeIterSeekPrefix(t *testing.T) {
